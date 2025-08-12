@@ -1,4 +1,24 @@
+import { init, deasciify, asciify } from './deasciifier.module.js';
+
+function loadPatterns() {
+  return fetch('patterns.json')
+    .then(response => response.json())
+    .then(patterns => {
+      init(patterns);
+      console.log('Patterns loaded:', patterns);
+    })
+    .catch(error => {
+      console.error('Error loading patterns:', error);
+    });
+  }
+
 function deasciifySelection() {
+  // Load patterns.json
+  loadPatterns().then(() => {
+    console.log('Patterns loaded successfully.');
+  });
+
+  // Get the current selection
   const selection = window.getSelection();
   console.log('Selection:', selection.toString());
   if (!selection || selection.rangeCount === 0) {
