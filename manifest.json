@@ -11,7 +11,7 @@
   "content_scripts": [
   {
     "matches": ["<all_urls>"],
-    "js": ["deasciifier.js", "deasciifier.patterns.min.js", "content.js"]
+    "js": ["deasciifier.module.js", "content.js"]
   }
 ],
   "action": {
