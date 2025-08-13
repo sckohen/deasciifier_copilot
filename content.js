@@ -30,14 +30,14 @@ function deasciifySelection() {
     console.log('Selection:', selection ? selection.toString() : '');
     if (!selection || selection.rangeCount === 0) {
       console.log('No selection or range count is zero.');
-      showPopup('No text selected. Please select some text first.', 'rgba(220, 125, 0, 0.95)', 3000);
+      showPopup('No text selected. Please select some text first.', 'rgba(220, 125, 0, 0.95)', 5000);
       return;
     }
     const range = selection.getRangeAt(0);
     const selectedText = selection.toString();
     if (!selectedText) {
       console.log('Selected text is empty.');
-      showPopup('No text selected. Please select some text first.', 'rgba(220, 125, 0, 0.95)', 3000);
+      showPopup('No text selected. Please select some text first.', 'rgba(220, 125, 0, 0.95)', 5000);
       return;
     }
   
@@ -55,19 +55,19 @@ function deasciifySelection() {
         replaced = false;
       }
       if (replaced) {
-        showPopup('Deasciification complete! \n' + deasciifiedObj.changedPositions.length, 'rgba(2, 146, 21, 0.85)', 1800);
+        showPopup('Deasciification complete! \n' + deasciifiedObj.changedPositions.length, 'rgba(2, 146, 21, 0.85)', 5000);
       } else {
         navigator.clipboard.writeText(deasciified).then(() => {
           console.log('Deasciified text copied to clipboard.');
           showPopup('Could not replace text directly. Deasciified text copied to clipboard! Paste it manually.', 'rgba(255,140,0,0.95)', 3500);
         }, () => {
           console.error('Failed to copy deasciified text to clipboard.');
-          showPopup('Could not replace text or copy to clipboard.', 'rgba(220,0,0,0.95)', 3500);
+          showPopup('Could not replace text or copy to clipboard.', 'rgba(220,0,0,0.95)', 5000);
         });
       }
     } catch (err) {
       console.error('Deasciifier error:', err);
-      showPopup('Deasciifier not ready. Please try again.', 'rgba(220,0,0,0.95)', 3500);
+      showPopup('Deasciifier not ready. Please try again.', 'rgba(220,0,0,0.95)', 5000);
     }
   }, 0);
 }
