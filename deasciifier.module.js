@@ -300,7 +300,7 @@
           skipURLs: true,
           skipDoubleQuotes: true,
           skipSingleQuotes: true,
-          replaceCapitalI: true
+          replaceCapitalI: false
       },
     get: function(options, optionName) {
       if (options && options.hasOwnProperty(optionName)) {
