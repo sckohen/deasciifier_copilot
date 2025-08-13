@@ -1,4 +1,3 @@
-
 (function() {
   // Turkish character tables (from base.js)
   const TURKISH_ASCIIFY_TABLE = {
@@ -240,8 +239,11 @@
     return { text, changedPositions, skippedRegions: filter };
   }
 
-  // Skip region logic (URLs only)
+  // Skip region logic
   const URL_REGEX = /\b((((https?|ftp|file):\/\/)|(www\.))[\S]+)/gi;
+  const DOUBLE_QUOTED_REGEX = /"[^"]*"/g;
+  const SINGLE_QUOTED_REGEX = /'[^']*'/g;
+  
   class SkipRegion {
     constructor(start, end) {
       this.start = start;
@@ -264,7 +266,16 @@
   const DefaultSkipFilter = {
     getSkipRegions: function(options, text) {
       const regexps = [];
-      if (options && options.skipURLs) regexps.push(URL_REGEX);
+      if (options && options.skipURLs) {
+          regexps.push(URL_REGEX);
+      }
+      if (options && options.skipDoubleQuotes) {
+        regexps.push(DOUBLE_QUOTED_REGEX);
+      }
+      if (options && options.skipSingleQuotes) {
+        regexps.push(SINGLE_QUOTED_REGEX);
+      }
+  
       const skipList = [];
       for (let i = 0; i < regexps.length; i++) {
         const regex = regexps[i];
@@ -278,11 +289,13 @@
       return new SkipList(skipList);
     }
   };
-
+  
   const Options = {
-    defaults: {
-      skipURLs: true
-    },
+      defaults: {
+          skipURLs: true,
+          skipDoubleQuotes: true,
+          skipSingleQuotes: true
+      },
     get: function(options, optionName) {
       if (options && options.hasOwnProperty(optionName)) {
         return options[optionName];
@@ -297,14 +310,15 @@
       return ret;
     }
   };
-
+  
   function build_skip_list(text, options) {
-    const skipOptions = Options.getMulti(options, ["skipURLs"]);
+      const skipOptions = Options.getMulti(options, ["skipURLs", "skipDoubleQuotes", "skipSingleQuotes"]);
     if (skipOptions) {
       return DefaultSkipFilter.getSkipRegions(skipOptions, text);
     }
     return null;
   }
+  
 
   function deasciifyRange(text, start, end, options) {
     if (!text) return null;
