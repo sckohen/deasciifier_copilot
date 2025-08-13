@@ -209,19 +209,24 @@
     return text;
   }
 
-  function turkish_need_correction(text, pos) {
+  function turkish_need_correction(text, pos, options) {
     let ch = text.charAt(pos);
     let tr = deasciifierState.turkish_asciify_table[ch];
     if (!tr) tr = ch;
     const pl = deasciifierState.turkish_pattern_table[tr.toLowerCase()];
     const m = pl && turkish_match_pattern(text, pos, pl);
+
     if (tr === "I") {
+      const shouldReplaceCapitalI = Options.get(options, 'replaceCapitalI');
+      if (!shouldReplaceCapitalI) {
+          return false; // Skip correction for 'I' if option is disabled
+      }
       return (ch === tr) ? !m : m;
     }
     return (ch === tr) ? m : !m;
   }
 
-  function turkish_correct_region(text, start, end, filter) {
+  function turkish_correct_region(text, start, end, filter, options) {
     if (!deasciifierState.initialized) {
       throw new Error("Pattern list not loaded");
     }
@@ -231,7 +236,7 @@
     const changedPositions = [];
     for (let i = start; i < end; i++) {
       if (filter && filter.shouldExclude && filter.shouldExclude(i)) continue;
-      if (turkish_need_correction(text, i)) {
+      if (turkish_need_correction(text, i, options)) {
         text = turkish_toggle_accent(text, i);
         changedPositions.push(i);
       }
@@ -294,7 +299,8 @@
       defaults: {
           skipURLs: true,
           skipDoubleQuotes: true,
-          skipSingleQuotes: true
+          skipSingleQuotes: true,
+          replaceCapitalI: true
       },
     get: function(options, optionName) {
       if (options && options.hasOwnProperty(optionName)) {
@@ -312,7 +318,7 @@
   };
   
   function build_skip_list(text, options) {
-      const skipOptions = Options.getMulti(options, ["skipURLs", "skipDoubleQuotes", "skipSingleQuotes"]);
+    const skipOptions = Options.getMulti(options, ["skipURLs", "skipDoubleQuotes", "skipSingleQuotes"]);
     if (skipOptions) {
       return DefaultSkipFilter.getSkipRegions(skipOptions, text);
     }
@@ -323,7 +329,7 @@
   function deasciifyRange(text, start, end, options) {
     if (!text) return null;
     return turkish_correct_region(
-      text, start, end, build_skip_list(text, options)
+      text, start, end, build_skip_list(text, options), options
     );
   }
 
