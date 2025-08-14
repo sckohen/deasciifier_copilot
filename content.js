@@ -9,7 +9,7 @@ function deasciifySelection() {
       processSelectedText(selectedText);
     } else {
       // Fallback for Google Docs and other complex editors
-      showInputPopup("Could not get selection. Paste text here to deasciify:", (pastedText) => {
+      showInputPopup("Paste text here to deasciify:", (pastedText) => {
         if (pastedText) {
           processPastedText(pastedText);
         }
