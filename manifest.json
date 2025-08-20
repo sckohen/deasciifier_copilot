@@ -3,11 +3,17 @@
   "name": "Turkish Deasciifier",
   "version": "1.0",
   "description": "Deasciifies selected text on web pages using Turkish character rules.",
-  "permissions": ["scripting", "activeTab", "clipboardWrite"],
+  "permissions": ["scripting", "activeTab", "clipboardWrite", "contextMenus"],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["icon_manager.js"]
+    }
+  ],
   "action": {
     "default_title": "Deasciify Selected Text"
   },
@@ -18,7 +24,7 @@
   },
   "web_accessible_resources": [
     {
-        "resources": [ "patterns.json" ],
+        "resources": [ "patterns.json", "icon48.png" ],
         "matches": ["<all_urls>"],
         "extension_ids": []
     }
